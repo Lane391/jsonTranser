@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/Lane391/jsonTranser/issues"
   },
-  "homepage": "https://github.com/Lane391/jsonTranser#readme"
+  "homepage": "https://github.com/Lane391/jsonTranser#readme",
+  "devDependencies": {
+    "jquery": "^2.2.1"
+  },
+  "dependencies": {
+    "jquery": "^2.2.1"
+  }
 }
