@@ -1,0 +1,23 @@
+{
+  "name": "transer",
+  "version": "1.0.0",
+  "description": "json transer",
+  "main": "transer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Lane391/jsonTranser.git"
+  },
+  "keywords": [
+    "json",
+    "translation"
+  ],
+  "author": "lane391",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lane391/jsonTranser/issues"
+  },
+  "homepage": "https://github.com/Lane391/jsonTranser#readme"
+}
