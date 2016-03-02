@@ -17,6 +17,15 @@
         return JsonTranslate(jsonData, options)
     }, publicName = 'jsonTrans';
 
+    function _packageLi(json_data) {
+        if (typeof json_data === 'object') {
+            var attrHTML = '';
+            for (var jsonKeyName in json_data) {
+                attrHTML = attrHTML + '="' + json_data[jsonKeyName] + '" '
+            }
+        }
+    }
+
     /**
      *
      * @param json_data
@@ -25,8 +34,11 @@
      * @constructor
      */
     function JsonTranslate(json_data, options) {
-
-        var out = '<ul>';
+        if (options.hasUL || typeof options.hasUL === 'undefined') {
+            var out = '<ul>';
+        } else {
+            var out;
+        }
 
         //SET OPTIONS
         if (options.formate == 'undefined') {
@@ -52,17 +64,13 @@
                 });
             } else {
                 //json data is not array
-                out = out + '<li class="' + options.className + '">';
-                for (var jsonKeyName in json_data) {
-                    out = out + json_data[jsonKeyName] + '' ;
-                }
-
-
-
+                out = Public.__packageForObj(json_data, options);
             }
         }
         return out;
     }
+
+    //  PRIVATE METHODS
 
     /**
      * is array? [private method]
@@ -82,6 +90,48 @@
      */
     Public._count = function (obj) {
         return Objec.keys(obj).length;
+    }
+
+    /**
+     * package
+     * @param json_data
+     * @param options
+     * @returns {string}
+     * @private
+     */
+    Public.__packageForObj = function (json_data, options) {
+        if (typeof json_data === 'object') {
+            var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
+            var showContent = '';
+            for (var jsonKeyName in json_data) {
+                attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
+                if (Public._checkOptions(options)) {
+                    if (typeof options.render == 'function') {
+                        showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
+                    } else {
+                        showContent = showContent + json_data[jsonKeyName] + ' ';
+                    }
+                } else {
+                    console.log('no options');
+                }
+            }
+            if (typeof options.setElement === 'undefined') {
+                return '<li ' + attrHTML + '>' + showContent + '</li>';
+            } else {
+                return '<' + options.setElement + attrHTML + '>' + showContent + '</' + options.setElement + '>';
+            }
+
+        }
+    }
+
+    /**
+     *
+     * @param options
+     * @returns {boolean}
+     * @private
+     */
+    Public.__checkOptions = function (options) {
+        return (typeof options != 'undefined');
     }
 
 
