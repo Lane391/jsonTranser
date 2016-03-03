@@ -1,5 +1,6 @@
 /**
  * json Translate to HTML or something else
+ *
  * author: robinwong51@qq.com
  * 2016/02/29
  */
@@ -17,15 +18,6 @@
         return JsonTranslate(jsonData, options)
     }, publicName = 'jsonTrans';
 
-    function _packageLi(json_data) {
-        if (typeof json_data === 'object') {
-            var attrHTML = '';
-            for (var jsonKeyName in json_data) {
-                attrHTML = attrHTML + '="' + json_data[jsonKeyName] + '" '
-            }
-        }
-    }
-
     /**
      *
      * @param json_data
@@ -34,10 +26,11 @@
      * @constructor
      */
     function JsonTranslate(json_data, options) {
-        if (options.hasUL || typeof options.hasUL === 'undefined') {
-            var out = '<ul>';
+        var out;
+        if (options.hasUL && typeof options.hasUL == 'undefined') {
+            out = '<ul>';
         } else {
-            var out;
+            out = '';
         }
 
         //SET OPTIONS
@@ -45,9 +38,6 @@
             options.formate = 'ul';
         }
 
-        if (options.className == 'undefined') {
-            options.className = '';
-        }
 
         var translateData = function (input_value) {
             if (typeof options.translateValue === 'function') {
@@ -64,13 +54,15 @@
                 });
             } else {
                 //json data is not array
-                out = Public.__packageForObj(json_data, options);
+                out = out + Public.__packageForObj(json_data, options);
             }
+        } else {
+            console.log()
         }
         return out;
     }
 
-    //  PRIVATE METHODS
+    //===================  PRIVATE METHODS  ===================
 
     /**
      * is array? [private method]
@@ -102,19 +94,28 @@
     Public.__packageForObj = function (json_data, options) {
         if (typeof json_data === 'object') {
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
+
+            if (typeof options.setClassName != 'undefined') {
+                attrHTML = attrHTML + 'class="'+ options.setClassName + '" ';
+            }
+
             var showContent = '';
+
             for (var jsonKeyName in json_data) {
-                attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
-                if (Public._checkOptions(options)) {
-                    if (typeof options.render == 'function') {
-                        showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
+                if (json.hasOwnProperty(jsonKeyName)) {
+                    attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
+                    if (Public._checkOptions(options)) {
+                        if (typeof options.render == 'function') {
+                            showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
+                        } else {
+                            showContent = showContent + json_data[jsonKeyName] + ' ';
+                        }
                     } else {
-                        showContent = showContent + json_data[jsonKeyName] + ' ';
+                        console.log('no options');
                     }
-                } else {
-                    console.log('no options');
                 }
             }
+
             if (typeof options.setElement === 'undefined') {
                 return '<li ' + attrHTML + '>' + showContent + '</li>';
             } else {
