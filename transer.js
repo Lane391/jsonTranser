@@ -43,14 +43,19 @@
             options.tag = 'li';
         }
 
-        var translateData = function (input_value) {
-            if (typeof options.translateValue === 'function') {
-                options.translateValue(input_value);
+        var cb = function (input_value) {
+            if (options.hasOwnProperty(callback)){
+                if (typeof options.callback === 'function') {
+                    options.callback(input_value);
+                }
+            }else{
+                return false;
             }
         };
 
         //RENDER ul elements
         if (options.tag == 'li') {
+            var ret = '';
             if (Public._isArray(json_data)) {
                 //json data is array
                 console.log('is array');
@@ -58,11 +63,14 @@
 
                 });
             } else {
-                //json data is not array
-                out = out + Public.__packageForObj(json_data, options);
+                ret = Public.__packageForObj(json_data,options);
+                out = out + ret;
             }
         } else {
             //not li
+        }
+        if (options.cb){
+            cb(ret);
         }
         return out;
     }
@@ -100,7 +108,8 @@
         if (typeof json_data === 'object') {
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
 
-            if (typeof options.setClassName != 'undefined') {
+
+            if (options.hasOwnProperty('setClassName')){
                 attrHTML = attrHTML + 'class="' + options.setClassName + '" ';
             }
 
@@ -138,7 +147,6 @@
     Public._checkOptions = function (options) {
         return (typeof options != 'undefined');
     }
-
 
     if (isNode) {
         module.exports = Public;
