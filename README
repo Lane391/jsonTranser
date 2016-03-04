@@ -1,2 +1,7 @@
 # Transer.js
-## JSON Translate
+## Translate JSON to HTML
+
+- OPTIONS:
+    - hasUl: do u get 'ul' tag.
+    - tag: the json will packing which the tag
+    - format: HTML or XML, the default is HTML(ul)

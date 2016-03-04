@@ -19,7 +19,7 @@
     }, publicName = 'jsonTrans';
 
     /**
-     *
+     * main function
      * @param json_data
      * @param options
      * @returns {string}
@@ -27,17 +27,21 @@
      */
     function JsonTranslate(json_data, options) {
         var out;
-        if (options.hasUL && typeof options.hasUL == 'undefined') {
+        if (typeof options == 'undefined') {
+            options = {};
+        }
+
+
+        if (options.hasOwnProperty('hasUl')) {
             out = '<ul>';
         } else {
             out = '';
         }
 
         //SET OPTIONS
-        if (options.formate == 'undefined') {
-            options.formate = 'ul';
+        if (!options.hasOwnProperty('tag')) {
+            options.tag = 'li';
         }
-
 
         var translateData = function (input_value) {
             if (typeof options.translateValue === 'function') {
@@ -46,9 +50,10 @@
         };
 
         //RENDER ul elements
-        if (options.formate == 'ul') {
+        if (options.tag == 'li') {
             if (Public._isArray(json_data)) {
                 //json data is array
+                console.log('is array');
                 json_data.map(function (k, v) {
 
                 });
@@ -57,7 +62,7 @@
                 out = out + Public.__packageForObj(json_data, options);
             }
         } else {
-            console.log()
+            //not li
         }
         return out;
     }
@@ -96,13 +101,13 @@
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
 
             if (typeof options.setClassName != 'undefined') {
-                attrHTML = attrHTML + 'class="'+ options.setClassName + '" ';
+                attrHTML = attrHTML + 'class="' + options.setClassName + '" ';
             }
 
             var showContent = '';
 
             for (var jsonKeyName in json_data) {
-                if (json.hasOwnProperty(jsonKeyName)) {
+                if (json_data.hasOwnProperty(jsonKeyName)) {
                     attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
                     if (Public._checkOptions(options)) {
                         if (typeof options.render == 'function') {
@@ -111,7 +116,7 @@
                             showContent = showContent + json_data[jsonKeyName] + ' ';
                         }
                     } else {
-                        console.log('no options');
+                        //no options
                     }
                 }
             }
@@ -121,7 +126,6 @@
             } else {
                 return '<' + options.setElement + attrHTML + '>' + showContent + '</' + options.setElement + '>';
             }
-
         }
     }
 
@@ -131,7 +135,7 @@
      * @returns {boolean}
      * @private
      */
-    Public.__checkOptions = function (options) {
+    Public._checkOptions = function (options) {
         return (typeof options != 'undefined');
     }
 

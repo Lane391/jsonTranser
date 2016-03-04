@@ -4,7 +4,7 @@
   "description": "json transer",
   "main": "transer.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R spec --ui bdd -b"
   },
   "repository": {
     "type": "git",
