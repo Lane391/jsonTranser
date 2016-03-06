@@ -3,6 +3,12 @@
  *
  * author: robinwong51@qq.com
  * 2016/02/29
+ * - OPTIONS:
+ *  - hasUl: do u get 'ul' tag.
+ *  - tag: the json will packing which the tag
+ *  - format: HTML or XML, the default is HTML(ul)
+ *  - setName: set the which show in HTML page
+ *  - setClassName: set the class name of HTML element
  */
 ;(function (isNode) {
     'use strict';
@@ -26,35 +32,57 @@
      * @constructor
      */
     function JsonTranslate(json_data, options) {
-        var out;
-        if (typeof options == 'undefined') {
-            options = {};
+        var out = '';
+
+        //check options
+        var __checkOptions = function (options) {
+            if (typeof options == 'undefined') {
+                options = {};
+            }
+
+            if (options.hasOwnProperty('hasUl')) {
+                out = '<ul>';
+                options.setElement = 'li';
+            } else {
+                out = '';
+            }
+
+            if (!options.hasOwnProperty('setClassName')) {
+                options.setClassName = false;
+            }
+
+            if (!options.hasOwnProperty('render')) {
+                options.render = false;
+            }
+
+            if (!options.hasOwnProperty('setElement')) {
+                options.setElement = false;
+            }
+
+            if (!options.hasOwnProperty('standardDesc')) {
+                options.standardDesc = false;
+            }
+
+            return options;
         }
-
-
-        if (options.hasOwnProperty('hasUl')) {
-            out = '<ul>';
-        } else {
-            out = '';
-        }
-
-        //SET OPTIONS
-        if (!options.hasOwnProperty('tag')) {
-            options.tag = 'li';
-        }
-
+        __checkOptions(options);
+        /**
+         *
+         * @param input_value
+         * @returns {*}
+         */
         var cb = function (input_value) {
-            if (options.hasOwnProperty(callback)){
+            if (options.hasOwnProperty('callback')) {
                 if (typeof options.callback === 'function') {
-                    options.callback(input_value);
+                    return options.callback(input_value);
                 }
-            }else{
-                return false;
+            } else {
+                return input_value;
             }
         };
 
         //RENDER ul elements
-        if (options.tag == 'li') {
+        if (options.hasUl) {
             var ret = '';
             if (Public._isArray(json_data)) {
                 //json data is array
@@ -63,19 +91,24 @@
 
                 });
             } else {
-                ret = Public.__packageForObj(json_data,options);
-                out = out + ret;
+                ret = Public.__packageForObj(json_data, options);
+                if (options.hasOwnProperty('hasUl')) {
+                    out = out + ret;
+                } else {
+                    out = out + ret;
+                }
+
             }
         } else {
-            //not li
+            //hasUl of the option is false.
+
         }
-        if (options.cb){
-            cb(ret);
-        }
-        return out;
+        //console.log(out);
+        return cb(out);
     }
 
     //===================  PRIVATE METHODS  ===================
+
 
     /**
      * is array? [private method]
@@ -94,7 +127,7 @@
      * @private
      */
     Public._count = function (obj) {
-        return Objec.keys(obj).length;
+        return Object.keys(obj).length;
     }
 
     /**
@@ -109,7 +142,7 @@
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
 
 
-            if (options.hasOwnProperty('setClassName')){
+            if (options.hasOwnProperty('setClassName')) {
                 attrHTML = attrHTML + 'class="' + options.setClassName + '" ';
             }
 
@@ -119,21 +152,24 @@
                 if (json_data.hasOwnProperty(jsonKeyName)) {
                     attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
                     if (Public._checkOptions(options)) {
-                        if (typeof options.render == 'function') {
-                            showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
-                        } else {
-                            showContent = showContent + json_data[jsonKeyName] + ' ';
+                        if (options.hasOwnProperty('render')) {
+                            if (typeof options.render == 'function') {
+                                showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
+                            } else {
+                                showContent = showContent + json_data[jsonKeyName] + ' ';
+                            }
                         }
+
                     } else {
                         //no options
                     }
                 }
             }
 
-            if (typeof options.setElement === 'undefined') {
+            if (!options.hasOwnProperty('setElement')) {
                 return '<li ' + attrHTML + '>' + showContent + '</li>';
             } else {
-                return '<' + options.setElement + attrHTML + '>' + showContent + '</' + options.setElement + '>';
+                return '<' + options.setElement + ' ' + attrHTML + '>' + showContent + '</' + options.setElement + '>';
             }
         }
     }
