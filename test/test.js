@@ -11,8 +11,9 @@ describe('TEST PART I', function () {
 
     it('show the json data: ', function (done) {
         json_data = {
-            name1: 'jack',
-            number: {"asdf":1}
+            id: 'linux',
+            class: 'dot',
+            value:'batman'
         };
         done();
     });
@@ -29,4 +30,10 @@ describe('TEST PART I', function () {
         console.log(result);
         done();
     });
+});
+
+describe('TEST SET CLASS NAME AND THE OTHER OPTIONS ITEMS', function() {
+    it('check_data',function(done){
+        done();
+    })
 });
