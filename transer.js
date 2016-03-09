@@ -87,14 +87,15 @@
         var ret = '';
         if (Public._isArray(json_data)) {
             //json data is array
-            Public.__packageForArray(json_data, options);
+            ret = Public.__packageForArray(json_data, options);
         } else {
             ret = Public.__packageForObj(json_data, options);
             //console.log(ret)
-
-            out = out + ret;
         }
-
+        out = out + ret;
+        if (options.hasUl){
+            out = out + '</ul>';
+        }
         //console.log(out);
         return cb(out);
     }
@@ -158,9 +159,9 @@
             for (var jsonKeyName in json_data) {
                 if (json_data.hasOwnProperty(jsonKeyName)) {
                     if (Public._isObject(json_data[jsonKeyName])) {
-                        Public.__packageForObj(json_data[jsonKeyName],options);
+                        Public.__packageForObj(json_data[jsonKeyName], options);
                     } else if (Public._isArray(json_data[jsonKeyName])) {
-                        Public.__packageForArray(json_data[jsonKeyName],options);
+                        Public.__packageForArray(json_data[jsonKeyName], options);
                     } else {
                         attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
                         if (options.hasOwnProperty('render')) {
@@ -175,7 +176,7 @@
             }
 
             return '<' + options.setElement + ' ' + attrHTML + '>' + showContent + '</' + options.setElement + '>';
-        }else{
+        } else {
             console.log('no obj');
         }
     }
