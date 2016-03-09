@@ -12,7 +12,6 @@
  */
 ;(function (isNode) {
     'use strict';
-
     /**
      *
      * @param jsonData
@@ -36,6 +35,7 @@
 
         //check options
         var __checkOptions = function (options) {
+
             if (typeof options == 'undefined') {
                 options = {};
             }
@@ -64,8 +64,9 @@
             }
 
             return options;
-        }
+        };
         __checkOptions(options);
+
         /**
          *
          * @param input_value
@@ -82,33 +83,21 @@
         };
 
         //RENDER ul elements
-        if (options.hasUl) {
-            var ret = '';
-            if (Public._isArray(json_data)) {
-                //json data is array
-                console.log('is array');
-                json_data.map(function (k, v) {
 
-                });
-            } else {
-                ret = Public.__packageForObj(json_data, options);
-                if (options.hasOwnProperty('hasUl')) {
-                    out = out + ret;
-                } else {
-                    out = out + ret;
-                }
-
-            }
+        var ret = '';
+        if (Public._isArray(json_data)) {
+            //json data is array
+            Public.__packageForArray(json_data, options);
         } else {
-            //hasUl of the option is false.
-
+            ret = Public.__packageForObj(json_data, options);
+            out = out + ret;
         }
+
         //console.log(out);
         return cb(out);
     }
 
     //===================  PRIVATE METHODS  ===================
-
 
     /**
      * is array? [private method]
@@ -118,7 +107,25 @@
      */
     Public._isArray = function (obj) {
         return Object.prototype.toString.call(obj) === '[Object Array]';
-    }
+    };
+
+    /**
+     * is object?
+     * @param obj
+     * @returns {boolean}
+     * @private
+     */
+    Public._isObject = function (obj) {
+        return Object.prototype.toString.call(obj) === '[Object Object]';
+    };
+
+    Public._isString = function (obj) {
+        return Object.protoptype.toString.call(obj) === '[Object String]';
+    };
+
+    Public._isNumber = function (obj) {
+        return Object.protoptype.toString.call(obj) === '[Object Number]';
+    };
 
     /**
      * count the json size
@@ -138,9 +145,8 @@
      * @private
      */
     Public.__packageForObj = function (json_data, options) {
-        if (typeof json_data === 'object') {
+        if (Public._isObject(json_data)) {
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
-
 
             if (options.hasOwnProperty('setClassName')) {
                 attrHTML = attrHTML + 'class="' + options.setClassName + '" ';
@@ -150,8 +156,12 @@
 
             for (var jsonKeyName in json_data) {
                 if (json_data.hasOwnProperty(jsonKeyName)) {
-                    attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
-                    if (Public._checkOptions(options)) {
+                    if (Public._isObject(json_data[jsonKeyName])) {
+                        Public.__packageForObj(json_data[jsonKeyName]);
+                    } else if (Public._isArray(json_data[jsonKeyName])) {
+                        Public.__packageForArray(json_data[jsonKeyName]);
+                    } else {
+                        attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
                         if (options.hasOwnProperty('render')) {
                             if (typeof options.render == 'function') {
                                 showContent = showContent + options.render(jsonKeyName, json_data[jsonKeyName]) + ' ';
@@ -159,9 +169,6 @@
                                 showContent = showContent + json_data[jsonKeyName] + ' ';
                             }
                         }
-
-                    } else {
-                        //no options
                     }
                 }
             }
@@ -172,6 +179,14 @@
                 return '<' + options.setElement + ' ' + attrHTML + '>' + showContent + '</' + options.setElement + '>';
             }
         }
+    }
+
+    Public.__packageForArray = function (array_object, options) {
+        var ret_arr = '';
+        array_object.map(function (ele) {
+            ret_arr = ret_arr + Public.__packageForObj(ele, options);
+        });
+        return ret_arr;
     }
 
     /**
