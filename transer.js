@@ -90,6 +90,8 @@
             Public.__packageForArray(json_data, options);
         } else {
             ret = Public.__packageForObj(json_data, options);
+            //console.log(ret)
+
             out = out + ret;
         }
 
@@ -106,7 +108,7 @@
      * @private
      */
     Public._isArray = function (obj) {
-        return Object.prototype.toString.call(obj) === '[Object Array]';
+        return Object.prototype.toString.call(obj) === '[object Array]';
     };
 
     /**
@@ -116,15 +118,15 @@
      * @private
      */
     Public._isObject = function (obj) {
-        return Object.prototype.toString.call(obj) === '[Object Object]';
+        return Object.prototype.toString.call(obj) === '[object Object]';
     };
 
     Public._isString = function (obj) {
-        return Object.protoptype.toString.call(obj) === '[Object String]';
+        return Object.protoptype.toString.call(obj) === '[object String]';
     };
 
     Public._isNumber = function (obj) {
-        return Object.protoptype.toString.call(obj) === '[Object Number]';
+        return Object.protoptype.toString.call(obj) === '[object Number]';
     };
 
     /**
@@ -145,21 +147,20 @@
      * @private
      */
     Public.__packageForObj = function (json_data, options) {
+        //console.log(Object.prototype.toString.call(json_data));
         if (Public._isObject(json_data)) {
             var attrHTML = 'value="' + JSON.stringify(json_data) + '" ';
+            var showContent = '';
 
             if (options.hasOwnProperty('setClassName')) {
                 attrHTML = attrHTML + 'class="' + options.setClassName + '" ';
             }
-
-            var showContent = '';
-
             for (var jsonKeyName in json_data) {
                 if (json_data.hasOwnProperty(jsonKeyName)) {
                     if (Public._isObject(json_data[jsonKeyName])) {
-                        Public.__packageForObj(json_data[jsonKeyName]);
+                        Public.__packageForObj(json_data[jsonKeyName],options);
                     } else if (Public._isArray(json_data[jsonKeyName])) {
-                        Public.__packageForArray(json_data[jsonKeyName]);
+                        Public.__packageForArray(json_data[jsonKeyName],options);
                     } else {
                         attrHTML = attrHTML + jsonKeyName + '="' + json_data[jsonKeyName] + '" ';
                         if (options.hasOwnProperty('render')) {
@@ -173,11 +174,9 @@
                 }
             }
 
-            if (!options.hasOwnProperty('setElement')) {
-                return '<li ' + attrHTML + '>' + showContent + '</li>';
-            } else {
-                return '<' + options.setElement + ' ' + attrHTML + '>' + showContent + '</' + options.setElement + '>';
-            }
+            return '<' + options.setElement + ' ' + attrHTML + '>' + showContent + '</' + options.setElement + '>';
+        }else{
+            console.log('no obj');
         }
     }
 

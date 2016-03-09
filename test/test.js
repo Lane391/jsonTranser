@@ -13,8 +13,13 @@ describe('TEST PART I', function () {
         json_data = {
             id: 'linux',
             class: 'dot',
-            value:'batman'
+            value:{
+                id:'windows',
+                class:'filt',
+                value:'superman'
+            }
         };
+
         done();
     });
 
@@ -26,6 +31,8 @@ describe('TEST PART I', function () {
     });
 
     it('check the function', function (done) {
+        console.log(json_data);
+        console.log(options);
         var result = transelater(json_data, options);
         console.log(result);
         done();
