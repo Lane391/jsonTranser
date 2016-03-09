@@ -10,15 +10,9 @@ describe('TEST PART I', function () {
     var options;
 
     it('show the json data: ', function (done) {
-        json_data = {
-            id: 'linux',
-            class: 'dot',
-            value:{
-                id:'windows',
-                class:'filt',
-                value:'superman'
-            }
-        };
+        json_data = [
+            {a:1,b:2},{a:3,b:5}
+        ];
 
         done();
     });
@@ -31,9 +25,7 @@ describe('TEST PART I', function () {
     });
 
     it('check the function', function (done) {
-        console.log(json_data);
-        console.log(options);
-        var result = transelater(json_data, options);
+      var result = transelater(json_data, options);
         console.log(result);
         done();
     });
